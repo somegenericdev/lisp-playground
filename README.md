@@ -61,5 +61,15 @@ If you dont have to handle the "else" case, it's better to use `when`. `when` ac
       (defparameter my-param "something") my-param)
 ```
 
+# Cond, case
 
-TODO cond, case
+`cond` is the "traditional" conditional construct of Lisp. there is no reason to use it and it can be considered legacy.
+
+`case` is Common Lisp's way to define what other languages would call a "match expression".
+
+```
+(case (+ 1 2)
+      (5 "variant 1, five")
+      ((2 3) "variant 2, two or three")
+      (otherwise "variant 3, none of above")) ;returns "variant 2, two or three"
+```
