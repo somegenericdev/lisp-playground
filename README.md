@@ -73,3 +73,5 @@ If you dont have to handle the "else" case, it's better to use `when`. `when` ac
       ((2 3) "variant 2, two or three")
       (otherwise "variant 3, none of above")) ;returns "variant 2, two or three"
 ```
+
+Notice that `case` uses `eql`, not `equal`. It can't be used for strings or lists.
