@@ -75,3 +75,119 @@ If you dont have to handle the "else" case, it's better to use `when`. `when` ac
 ```
 
 Notice that `case` uses `eql`, not `equal`. It can't be used for strings or lists.
+
+Alexandria's `switch` on the other hand can be configured to use `equal` 
+
+```
+(alexandria:switch ("XY" :test 'equal)
+  ("XY" "an X and a Y")
+  ("AB" "an A and a B"))
+```
+
+# Looping - Definite loops
+
+There are two fundamental things to remember in `loop`s
+
+* `do` is for side effects
+
+* `collect` is for returning
+
+```
+(loop for x in '(1 3 5)
+            collect (+ x 1) ) ;returns '(2 4 6)
+
+
+(loop for x in '(1 3 5)
+            do (print x) )
+```
+
+To iterate over vectors, we use `across` instead of `in`
+
+```
+(loop for x across #(1 3 5)
+            do (print x))
+```
+
+If we want to be able to iterate over both lists and vectors, we can use `being the element of`:
+
+```
+(loop for x being the element of #(1 3 5)
+            do (print x))
+```
+
+### Iterating over ranges
+
+`loop` supports iterating over ranges:
+
+```
+(defun print-range () (loop for x from 1 to 10 do (print x)))
+```
+
+
+# Looping - Indefinite loops
+
+`loop` supports while loops too
+
+```
+(defun print-something-10-times () (let ((i 0))
+                                     (loop while (< i 10)
+                                           do (print "something")
+                                             (setf i (+ i 1)))))
+```
+
+# Looping - Infinite loop
+
+Common Lisp's way of writing a `while(true)` is the simplest form of the loop construct:
+
+```
+(loop (print "printing this forever"))
+```
+
+# Functions - default values
+
+We can define default values for function parameters like this:
+
+```
+(defun print-name (&key (name "John") (surname "Doe"))
+  (format t "Your name is ~a and your surname is ~a" name surname))
+
+(print-name) ;prints "Your name is John and your surname is Doe"
+```
+
+Notice that if we were to provide values, we'd have to name the parameters
+
+```
+(print-name :name "Foo" :surname "Bar")
+```
+
+# Functions - variadic arguments
+
+To provide variadic arguments (essentially what `params` does in C#) we use `&rest`
+
+```
+(defun get-max (&rest numbers) (loop for x in numbers maximizing x))
+
+(get-max 1 9 10 99) ;returns 99
+```
+
+# Packages
+
+You can install a package by running this inside of `sbcl`:
+
+```
+(ql:quickload "alexandria")
+```
+
+You can then call the functions by prefixing them with the package name:
+
+```
+(alexandria:switch ("XY" :test 'equal)
+  ("XY" "an X and a Y")
+  ("AB" "an A and a B"))
+```
+
+If you're unsure about the full name of a function, you can search for it with `apropos`:
+
+```
+(apropos "switch")
+```
