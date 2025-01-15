@@ -123,7 +123,6 @@ If we want to be able to iterate over both lists and vectors, we can use `being 
 (defun print-range () (loop for x from 1 to 10 do (print x)))
 ```
 
-
 # Looping - Indefinite loops
 
 `loop` supports while loops too
