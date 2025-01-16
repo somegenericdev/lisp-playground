@@ -169,6 +169,53 @@ To provide variadic arguments (essentially what `params` does in C#) we use `&re
 (get-max 1 9 10 99) ;returns 99
 ```
 
+# Functions - function references (sharp quote and lambda)
+
+To reference functions in Common Lisp, we use a sharp quote (`#'`)
+
+```
+(defun say-hello ()
+    (print "hello"))
+
+(print #'say-hello)
+(funcall #'say-hello)
+```
+
+Sharp quotes are used a lot to define higher order functions in Common Lisp:
+
+```
+(defun operation (a b &key(operation-type #'+))
+    (funcall operation-type a b)
+  )
+
+(operation 5 5) ;returns 10
+(operation 5 5 :operation-type #'-) ;returns 0
+```
+
+Alternatively, we could also use `lambda` functions for the same purpose:
+
+```
+(operation 5 5 :operation-type (lambda (a b)  (+ a b)))
+```
+
+# Functions - multiple return values
+
+In Common Lisp we can return multiple values with `values`. This is similar in practice to returning a tuple in other languages.
+
+To "destructure" the "tuple", we use `multiple-value-bind`.
+
+```
+(defun return-some-numbers ()
+  (values 5 15 25))
+
+
+(defun print-some-numbers ()
+  (multiple-value-bind (first second third) (return-some-numbers)
+    (print first)
+    (print second)
+    (print third)))
+```
+
 # Packages
 
 You can install a package by running this inside of `sbcl`:
