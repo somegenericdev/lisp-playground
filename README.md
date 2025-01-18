@@ -216,7 +216,101 @@ To "destructure" the "tuple", we use `multiple-value-bind`.
     (print third)))
 ```
 
-# Packages
+# Methods
+
+Methods, unlike functions, can have typed parameters and overloading.
+
+```
+(defmethod say-hello ((my-dictionary hash-table))
+  (print "Hello pretty dictionary")
+  )
+
+
+(defmethod say-hello ((my-string string))
+  (print "Hello pretty string"))
+
+
+(say-hello (make-hash-table)) ;prints "Hello pretty dictionary"
+(say-hello "ciao") ;prints "Hello pretty string"
+(say-hello 11) ;error: "There is no applicable method"
+```
+
+This behavior is called `generic functions` in Common Lisp parlance, and it's Common Lisp's own way to achieve **dynamic dispatch**.
+
+# Systems, packages
+
+A **system** contains the metadata of your packages. When you `quickload` a library you're installing a Lisp **system**.
+
+Systems are, conceptually, like Debian packages.
+
+A **package**, on the other hand, is a container that contains symbols.
+
+Packages are, conceptually, like namespaces in other languages.
+
+When we start a new Lisp project, by default we're in the `common-lisp-user`. This package groups together all the functions and macros of the standard language. For example, `defun` or `let` are found inside this package.
+
+# Work with existing projects
+
+Projects on Github will have an `.asd` file. That's the system definition.
+
+To load the system definition, we launch from an sbcl shell:
+
+```
+(asdf:load-asd "systemName.asd")
+```
+
+Then, we load it with Quicklisp (note that Quicklisp does double duty: it can load both projects from the internet or local ones):
+
+```
+(ql:quickload "systemName")
+```
+
+To switch from the `common-lisp-user` package to the Github project's package (thus being able to access internal functions) we run:
+
+```
+(in-package :packageName)
+```
+
+# Create your own project
+
+The simplest `.asd` file you can have looks like this:
+
+```
+(in-package #:asdf-user)
+
+(defsystem :my-project
+  :depends-on (:alexandria :str :cl-ppcre :clingon)
+  :components ((:file "my-project")
+               (:static-file "README.md")))
+```
+
+Here we are saying that 
+* our system is called `my-project` (`defsystem :my-project`)
+* our dependencies are the libraries `alexandria`, `str`, `cl-ppcre`, `clingon`
+* the source file is called `my-project.lisp` (`:file "my-project"`)
+* we should include a static file in the project (`:static-file "README.md"`)
+
+Then we'll have our `my-project.lisp` file:
+
+```
+(defpackage #:mypackage
+  (:use :cl)
+  (:export :my-entry-point))
+
+(in-package :mypackage)
+
+(defun my-entry-point ()
+  (print "You're in the entry point"))
+```
+
+Here:
+
+* we define a package called mypackage (`defpackage`)
+* we import the `common-lisp-user` package (`:use :cl`)
+* we get inside the `mypackage` package (`(in-package :mypackage)`)
+* we define an entry point 
+
+# Installing Packages
 
 You can install a package by running this inside of `sbcl`:
 
