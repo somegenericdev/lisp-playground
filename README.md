@@ -216,6 +216,93 @@ To "destructure" the "tuple", we use `multiple-value-bind`.
     (print third)))
 ```
 
+# Classes
+
+We can define classes with `defclass`. We can instantiate them with `make-instance`.
+
+```
+(defclass person ()
+    ())
+
+(make-instance 'person)
+```
+
+We can define `slots` (fields) in the second form:
+
+```
+(defclass person ()
+    (name age))
+```
+
+### Set fields
+
+We can set the value of fields with `(setf (slot-value ...`:
+
+```
+(defparameter person-obj (make-instance 'person))
+(setf (slot-value person-obj 'name) "John Doe")
+```
+
+### Get fields
+
+We have several ways to get the value of a field.
+
+We can get the value of fields with `slot-value`
+
+```
+(slot-value person-obj 'name)
+```
+
+We can also define a `reader` (that is, a getter) on the class definition
+
+```
+(defclass person ()
+    ((name :reader name) (age :reader age)))
+```
+
+Then, we can access the value simply with `(name obj)`:
+
+```
+(defparameter person-obj (make-instance 'person))
+(setf (slot-value person-obj 'name) "Johnny")
+(name person-obj)
+```
+
+We could also define an `accessor` (which is similar to a reader, but it's also `setf`able, meaning that it's both a getter and a setter):
+
+```
+(defclass person ()
+    ((name :accessor name) (age :accessor age)))
+
+(defparameter person-obj (make-instance 'person))
+(setf (name person-obj) "Johnny") ;sets the accessor
+(name person-obj) ;gets the accessor
+```
+
+### Set default values for fields
+
+We can set a default value for fields with the `:initform` keyword:
+
+```
+(defclass person ()
+    ((name :initform "John Doe") (age :initform 20)))
+```
+
+### Set fields at instantiation time
+
+We can set fields at instantiation time by using the `:initarg` symbol. This is in practice similar to constructors in other programming languages.
+
+```
+(defclass person ()
+    ((name :initarg :name) (age :initarg :age)))
+
+(defparameter person-obj (make-instance 'person :name "Johnny" :age 22))
+```
+
+# Keywords vs symbols
+
+`TODO`
+
 # Methods
 
 Methods, unlike functions, can have typed parameters and overloading.
