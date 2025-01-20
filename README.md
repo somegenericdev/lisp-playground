@@ -299,9 +299,31 @@ We can set fields at instantiation time by using the `:initarg` symbol. This is 
 (defparameter person-obj (make-instance 'person :name "Johnny" :age 22))
 ```
 
-# Keywords vs symbols
+### Print objects
 
-`TODO`
+We can print an object's contents like this:
+
+```
+(describe person-obj)
+```
+
+# Symbols vs keywords
+
+A symbol looks like `'foo`.  A keyword looks like `:foo`.
+
+It's common to see both used as arguments to functions or macros.
+
+Keywords are essentially **syntactic sugar**. A keyword is a symbol that gets interned in the **keyword package**l.
+
+In other words, `:foo` is a shorthand for `keyword:foo`.
+
+A normal symbol, on the other hand, gets interned in the package it's defined in.
+
+In practice, this means that passing a keyword to some function that resides in a package different than your own is safer, since the keyword is interned in its own package and not yours or the function's. <br/>
+For example, if you passed a symbol to a function that resides in a different package and the function checked for equality, the check would fail, since it would be checking if `'this-package:foo` equals to `'some-other-package:foo`. <br/>
+In the same scenario, the check would pass with a keyword.
+
+As a final note, keep in mind that `'symbol` is, too, a form of sytactic sugar. It stands for `(quote symbol)`
 
 # Methods
 
