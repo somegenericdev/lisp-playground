@@ -307,6 +307,27 @@ We can print an object's contents like this:
 (describe person-obj)
 ```
 
+### Instance allocation vs class allocation
+
+By default, fields are defined as being "instance allocated". This means that if we set a field to some value, that change will be reflected only for that one instance.
+
+If we define a field as being "class allocated" instead, setting the field to some value will set it also for every other instance of that class.
+
+In a way, this behavior is similar to "static fields" in other languages.
+
+```
+(defclass person ()
+    ((name :initarg :name) (age :allocation :class))) ;age is class allocated
+
+
+(defparameter johnny (make-instance 'person :name "Johnny"))
+(defparameter bobby (make-instance 'person :name "Bobby"))
+
+(setf (slot-value johnny 'age) 20) ;set Johnny's age to 20
+(print (slot-value johnny 'age))
+(print (slot-value bobby 'age)) ;Bobby's age is now also 20
+```
+
 # Symbols vs keywords
 
 A symbol looks like `'foo`.  A keyword looks like `:foo`.
