@@ -346,6 +346,21 @@ Methods, unlike functions, can have typed parameters and overloading.
 
 This behavior is called `generic functions` in Common Lisp parlance, and it's Common Lisp's own way to achieve **dynamic dispatch**.
 
+An alternative to `defmethod` is `defgeneric`. The difference is basically that, with `defgeneric`, we essentially centralize all the method "specializations" in one single block.
+
+```
+(defgeneric say-hello (obj)
+  (:method ((my-string string))
+           (print "Hello pretty string"))
+  (:method ((my-hash-table hash-table))
+           (print "Hello pretty dictionary")))
+
+(say-hello (make-hash-table)) ;prints "Hello pretty dictionary"
+(say-hello "ciao") ;prints "Hello pretty string"
+```
+
+For most practical purposes, `defmethod` is recommended over `defgeneric`.
+
 # Systems, packages
 
 A **system** contains the metadata of your packages. When you `quickload` a library you're installing a Lisp **system**.
