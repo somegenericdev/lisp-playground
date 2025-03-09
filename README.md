@@ -464,6 +464,55 @@ TODO maybe inherit from error???????
 (unwind-protect (function-that-might-signal-error) (finally-function))
 ```
 
+# Macros
+
+Macros, unlike functions, do **NOT** evaluate their arguments.
+
+```
+(defun test-function (expr)
+  (format nil "our expression is: ~s" expr))
+
+(defmacro test-macro (expr)
+  (format nil "our expression is: ~s" expr))
+
+(test-function (+ 1 2)) ;returns 3
+(test-macro (+ 1 2)) ;returns (+ 1 2)
+```
+
+Macros, unlike functions, run at **compile time**.
+
+### Quotes
+
+Quotes (`quote` or `'`) prevent evaluation of their arguments.
+
+They can be used inside of macros, but also in regular code.
+
+### Backquotes and commas
+
+Commas (`,`) and backquotes (`````) are two features that are supposed to be used together. You must be inside a **backquoted** expression to use a comma.
+
+Backquote is essentially the same as quote, it prevents the evaluation of its argument. The only difference is that it allows the use of `comma`s inside of it.
+
+Commas are basically "exceptions" to the backquote. If you decorate an item with a comma, you're basically saying "I want to evaluate this thing, unlike the rest of the expression".
+
+```
+(let ((a 1)
+      (b 2))
+  `(a ,b)) ;returns (A 2)
+```
+
+Just like regular quotes, backquotes and commas can also be used in regular code, outside of macros.
+
+### Functions vs Macros
+
+* Macros do **not** evaluate their arguments
+* Macros **cannot** be used as higher order functions
+* Macros **cannot** be seen in a stacktrace or when you disassemble the code
+
+### Comma splice
+
+`Comma splice` (`,@`) can be thought of as a "flatmap" for Lisp lists. It can be used when you find that you have an extra "level" of parentheses.
+
 # Systems, packages
 
 A **system** contains the metadata of your packages. When you `quickload` a library you're installing a Lisp **system**.
