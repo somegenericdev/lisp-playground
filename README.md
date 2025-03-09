@@ -346,7 +346,7 @@ Methods, unlike functions, can have typed parameters and overloading.
 
 This behavior is called `generic functions` in Common Lisp parlance, and it's Common Lisp's own way to achieve **dynamic dispatch**.
 
-An alternative to `defmethod` is `defgeneric`. The difference is basically that, with `defgeneric`, we essentially centralize all the method "specializations" in one single block.
+An alternative to `defmethod` is `defgeneric`. The difference is basically that, with `defgeneric`, we essentially centralize all of the method's "specializations" in one single block.
 
 ```
 (defgeneric say-hello (obj)
