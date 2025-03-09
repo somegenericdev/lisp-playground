@@ -489,7 +489,7 @@ They can be used inside of macros, but also in regular code.
 
 ### Backquotes and commas
 
-Commas (`,`) and backquotes (`````) are two features that are supposed to be used together. You must be inside a **backquoted** expression to use a comma.
+Commas (`,`) and backquotes (`` ` ``) are two features that are supposed to be used together. You must be inside a **backquoted** expression to use a comma.
 
 Backquote is essentially the same as quote, it prevents the evaluation of its argument. The only difference is that it allows the use of `comma`s inside of it.
 
