@@ -382,6 +382,88 @@ An alternative to `defmethod` is `defgeneric`. The difference is basically that,
 
 For most practical purposes, `defmethod` is recommended over `defgeneric`.
 
+# Errors
+
+In Lisp parlance, errors are **signaled**, not thrown.
+
+To signal an error, we use the `error` function:
+
+```
+(error "error was signaled!")
+```
+
+Errors follow a hierarchy, much like classes. The simplest error type - which is the one we've thrown above - is called `SIMPLE-ERROR`.
+
+`SIMPLE-ERROR` inherits from a more generic type, called a `SIMPLE-CONDITION`. A `condition` is not necessarily an error, but it still represents something that you want to "signal".
+
+An example of another common condition type that is not an error are warnings, which we can signal with the `warn` function.
+
+The full list of built-in condition types is noted below.
+
+```
+arithmetic-error                  floating-point-overflow   simple-type-error   
+cell-error                        floating-point-underflow  simple-warning      
+condition                         package-error             storage-condition   
+control-error                     parse-error               stream-error        
+division-by-zero                  print-not-readable        style-warning       
+end-of-file                       program-error             type-error          
+error                             reader-error              unbound-slot        
+file-error                        serious-condition         unbound-variable    
+floating-point-inexact            simple-condition          undefined-function  
+floating-point-invalid-operation  simple-error              warning             
+```
+
+### Handling (catching)
+
+In Lisp parlance, we "handle" conditions, we don't "catch" them.
+
+To handle conditions, we use `handler-case`:
+
+```
+(handler-case (function-that-might-signal-a-condition)
+  (error (c)
+    (print "we got an error"))
+  (warning (c)
+           (print "we got a warning"))
+  )
+```
+
+If we wanted to handle **all** conditions, we could replace `error` or `warning` with their superclass `simple-condition`.
+
+Similarly, we could replace `error` or `warning` with a more specialized condition type, like `parse-error` or `division-by-zero`.
+
+### Define custom conditions
+
+We can define our own custom conditions that inherit from `simple-condition`
+
+```
+(define-condition my-condition-name (simple-condition) ())
+```
+
+Or also own our custom errors that inherit from `simple-error`:
+
+```
+(define-condition my-condition-name (simple-error) ())
+```
+
+TODO maybe inherit from error???????
+
+
+
+### Unwind-protect (finally)
+
+`unwind-protect` is basically Common Lisp's equivalent of what in other languages is called a `finally` block.
+
+```
+(defun finally-function ()
+  (print "Cleaning up...."))
+
+(defun function-that-might-signal-error ()
+  (error "Something bad happened!"))
+
+(unwind-protect (function-that-might-signal-error) (finally-function))
+```
+
 # Systems, packages
 
 A **system** contains the metadata of your packages. When you `quickload` a library you're installing a Lisp **system**.
