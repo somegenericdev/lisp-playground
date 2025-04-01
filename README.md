@@ -2,6 +2,14 @@
 
 Load Common Lisp file into VSCode REPL: `ALT+Shift+L`
 
+### Expand macro
+
+1. Position yourself at the last parens of a macro call
+2. Open VSCode's command palette
+3. Select "Inspect macro"
+
+![alt text](expanded.png)
+
 # Equality operators
 
 * `eq` is for by-reference equality. Useful if you want to check if two objects are the same object.
@@ -512,6 +520,75 @@ Just like regular quotes, backquotes and commas can also be used in regular code
 ### Comma splice
 
 `Comma splice` (`,@`) can be thought of as a "flatmap" for Lisp lists. It can be used when you find that you have an extra "level" of parentheses.
+
+### &body vs &rest
+
+In macros, we'll often see `&body` being used in place of `&rest`.
+
+The only difference is that `&body` instructs emacs to indent the arguments provided for a `&body` parameter at the same level. Identation aside, they are functionally completely identical.
+
+### Gensym
+
+`gensym` generates a symbol name that is guaranteed to be unique.
+
+It's meant to be used inside of macros for variable names. This way you avoid conflicts with your runtime variables' names.
+
+### CL flow
+
+1. The Lisp reader reads your code, to check if it is syntactically sound (**read time**)
+2. Macros expand to code (**macro expansion time**)
+3. The code is compiled (**compile time**)
+4. The code is ran (**run time**)
+
+### Macros - a practical example
+
+```
+(defmacro with-long-compilation (&body body)
+  (sleep 2)
+  (format t "finished sleeping")
+  `(progn ,@body))
+
+(defun main ()
+    (with-long-compilation (print "hi")))
+
+(main)
+```
+
+The `with-long-compilation` is going to expand **to the last expression** (the return value). 
+
+The first part of the macro (the 2 seconds of sleep and the format) are going to be ran by the compiler, but are not part of the expansion.
+
+What is going to happen is then that:
+
+1. Compilation is going to take 2+ seconds, due to the first two instructions
+2. Once compilation is done, the macro is expanded to `(progn (print "hi"))`
+
+### Macros - use cases
+
+As we've seen in the example above, there are two main use cases for macros:
+
+1. have the compiler run code, often to run validation logic
+2. expand to code
+
+In the example above, we're actually doing both things.
+
+A famous lisp macro that uses exclusively the first pattern is `defun*`. [`defun*`](https://github.com/lisp-maintainers/defstar) lets you assign static types to function parameters and raises compiler errors if invalid arguments are provided.
+
+### Macros - reader macros
+
+A specific kind of macros, **reader macros**, expand at read time, rather than compile time.
+
+Reader macros are ran with `#.` (sharp dot).
+
+```
+(defun create-function-name ()
+    'my-second-function)
+
+(defun #.(create-function-name) ()
+    (print "hello from the function"))
+
+(my-second-function) ;prints "hello from the function"
+```
 
 # Systems, packages
 
