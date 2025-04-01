@@ -8,7 +8,7 @@ Load Common Lisp file into VSCode REPL: `ALT+Shift+L`
 2. Open VSCode's command palette
 3. Select "Inspect macro"
 
-![alt text](expanded.png)
+![alt text](expansion.png)
 
 # Equality operators
 
